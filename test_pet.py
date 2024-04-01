@@ -36,11 +36,42 @@ def test_find_by_status_200(status):
     response = api_helpers.get_api_data(test_endpoint, params)
     # TODO...
 
+    assert response.status_code == 200
+
+    for i in response.json():
+        # Validate the response schema against the defined schema in schemas.py
+        validate(i, schema=schemas.pet)
+
+        assert i['status'] == 'available'
+
 '''
 TODO: Finish this test by...
 1) Testing and validating the appropriate 404 response for /pets/{pet_id}
 2) Parameterizing the test for any edge cases
 '''
-def test_get_by_id_404():
+@pytest.mark.parametrize("pet_id, code", [(3, 404), (4, 404), (5, 404),(6, 404),(7, 404),(8, 404), (9, 404)])
+def test_get_by_id_404(pet_id, code):
     # TODO...
-    pass
+
+    test_endpoint = f"/pets/{pet_id}"
+    params = {
+        "pet_id": pet_id
+    }
+
+    response = api_helpers.get_api_data(test_endpoint, params)
+
+    assert response.status_code == code
+
+
+@pytest.mark.parametrize("pet_id, code", [(0, 200), (1, 200), (2, 200)])
+def test_get_by_id_200(pet_id, code):
+    # TODO...
+
+    test_endpoint = f"/pets/{pet_id}"
+    params = {
+        "pet_id": pet_id
+    }
+
+    response = api_helpers.get_api_data(test_endpoint, params)
+
+    assert response.status_code == code
